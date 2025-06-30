@@ -6,9 +6,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 import matplotlib.pyplot as plt
-from sklearn.feature_extraction.text import TfidfVectorizer
-from ipywidgets import Text, Output, VBox, Button, Layout
-from IPython.display import display
 
 # Read the Excel file
 df = pd.read_excel('Eco_Intel2_clean2.xlsx')
@@ -104,22 +101,35 @@ def analyze_argument(argument_text):
     
     return score
 
-# Interfaz interactiva
-entrada = Text(
-    description='Question 14:',
-    placeholder='Da una razón de tu cambio de mentalidad y sostenibilidad.',
-    layout=Layout(width='600px')
-)
-out = Output()
-boton = Button(
-    description='Analizar cambio Inteligencia Ecológica',
-    layout=Layout(width='300px')  # Set button width here
-)
-
-def analizar_ie(b):
-    with out:
-        out.clear_output()
-        analyze_argument(entrada.value)
-
-boton.on_click(analizar_ie)
-display(VBox([entrada, boton, out]))
+# Command-line interface for testing
+if __name__ == "__main__":
+    print("🌱 Análisis de Inteligencia Ecológica")
+    print("=" * 50)
+    
+    # Show model performance
+    print("\n📊 Rendimiento de los Modelos:")
+    for name, result in results.items():
+        print(f"{name}:")
+        print(f"  R² Score: {result['r2']:.3f}")
+        print(f"  MSE: {result['mse']:.3f}")
+    
+    print("\n🔍 Top 10 Palabras/Frases Más Importantes:")
+    for i, (feature, importance) in enumerate(zip(top_features[-10:], top_importances[-10:]), 1):
+        print(f"  {i}. {feature}: {importance:.4f}")
+    
+    # Interactive prediction
+    print("\n" + "=" * 50)
+    print("💭 Analiza tu Argumento")
+    print("Question 14: Da una razón de tu cambio de mentalidad y sostenibilidad:")
+    
+    while True:
+        user_input = input("\nEscribe tu argumento (o 'salir' para terminar): ")
+        
+        if user_input.lower() in ['salir', 'exit', 'quit']:
+            print("¡Hasta luego! 👋")
+            break
+        
+        if user_input.strip():
+            score = analyze_argument(user_input)
+        else:
+            print("⚠️ Por favor, ingresa un argumento válido.")
